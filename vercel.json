@@ -1,8 +1,11 @@
 {
   "version": 2,
   "functions": {
-    "api/serve.js": {
-      "maxDuration": 10
-    }
-  }
+    "api/serve.js": { "maxDuration": 10 },
+    "api/validate.js": { "maxDuration": 10 }
+  },
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/(.*)", "dest": "/public/$1" }
+  ]
 }
