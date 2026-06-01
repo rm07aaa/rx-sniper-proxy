@@ -1,30 +1,46 @@
+// api/serve.js — RX Sniper proxy (multi-user + token validation)
+
+
+const GITHUB_USER   = 'rm07aaa';
+const GITHUB_REPO   = 'rx-script-store';
+const GITHUB_FILE   = 'rx_sniper_mobile_full.js';
+const GITHUB_BRANCH = 'main';
+// ──────────────────────────────────────────────────────────
+
+
 const VALID_TOKENS = new Set([
   process.env.TOKEN_USER_1,
   process.env.TOKEN_USER_2,
   process.env.TOKEN_USER_3,
+  process.env.TOKEN_USER_4,
+  process.env.TOKEN_USER_5,
 ]);
-
-// Your private repo details
-const GITHUB_USER    = 'rm07aaa';
-const GITHUB_REPO    = 'rx-script-store';
-const GITHUB_FILE    = 'rx_sniper_mobile_full.js';
-const GITHUB_BRANCH  = 'main';
 
 export default async function handler(req, res) {
 
-  if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', 'x-rx-token');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-    return res.status(200).end();
+  // ── CORS ──────────────────────────────────────────────────
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'x-rx-token, content-type');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  if (req.method === 'OPTIONS') return res.status(200).end();
+
+  const { pathname } = new URL(req.url, `https://${req.headers.host}`);
+
+  // ── ROUTE 1: /api/serve/validate ──────────────────────────
+  if (pathname === '/api/serve/validate') {
+    const token = req.headers['x-rx-token'];
+    if (!token || !VALID_TOKENS.has(token)) {
+      return res.status(403).json({ valid: false });
+    }
+    return res.status(200).json({ valid: true });
   }
 
+  // ── ROUTE 2: /api/serve ───────────────────────────────────
   const token = req.headers['x-rx-token'];
   if (!token || !VALID_TOKENS.has(token)) {
     return res.status(403).json({ error: 'Forbidden' });
   }
 
-  // Fetch script from private repo using PAT — this all happens server-side
   const url = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${GITHUB_FILE}`;
 
   const response = await fetch(url, {
