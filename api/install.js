@@ -1,4 +1,4 @@
-// api/script.js — serves the userscript with header
+// api/install.js
 
 export default async function handler(req, res) {
 
@@ -11,7 +11,6 @@ export default async function handler(req, res) {
   ]);
 
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Headers', 'x-rx-token');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   const token = req.query.token;
@@ -19,7 +18,6 @@ export default async function handler(req, res) {
     return res.status(403).send('// Forbidden');
   }
 
-  // Fetch from private GitHub repo
   const url = `https://raw.githubusercontent.com/${process.env.GITHUB_USER}/${process.env.GITHUB_REPO}/${process.env.GITHUB_BRANCH}/${process.env.GITHUB_FILE}`;
 
   const response = await fetch(url, {
@@ -49,6 +47,7 @@ export default async function handler(req, res) {
 
 ${scriptContent}`;
 
+  // This content-type + .user.js in the URL triggers UserScripts install
   res.setHeader('Content-Type', 'text/javascript; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store');
   res.status(200).send(userscript);
