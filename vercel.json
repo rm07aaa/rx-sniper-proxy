@@ -3,9 +3,12 @@
   "functions": {
     "api/serve.js": { "maxDuration": 10 },
     "api/validate.js": { "maxDuration": 10 },
-    "api/script.js": { "maxDuration": 10 }
+    "api/install.js": { "maxDuration": 10 }
   },
   "rewrites": [
-    { "source": "/rx-sniper.user.js", "destination": "/api/script" }
+    {
+      "source": "/rx-sniper.user.js",
+      "destination": "/api/install"
+    }
   ]
 }
