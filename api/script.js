@@ -1,13 +1,15 @@
-
-const VALID_TOKENS = new Set([
-  process.env.TOKEN_USER_1,
-  process.env.TOKEN_USER_2,
-  process.env.TOKEN_USER_3,
-  process.env.TOKEN_USER_4,
-  process.env.TOKEN_USER_5,
-]);
+// api/script.js — serves the userscript with header
 
 export default async function handler(req, res) {
+
+  const VALID_TOKENS = new Set([
+    process.env.TOKEN_USER_1,
+    process.env.TOKEN_USER_2,
+    process.env.TOKEN_USER_3,
+    process.env.TOKEN_USER_4,
+    process.env.TOKEN_USER_5,
+  ]);
+
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'x-rx-token');
   if (req.method === 'OPTIONS') return res.status(200).end();
@@ -17,7 +19,7 @@ export default async function handler(req, res) {
     return res.status(403).send('// Forbidden');
   }
 
-  // Fetch the actual script from your private repo
+  // Fetch from private GitHub repo
   const url = `https://raw.githubusercontent.com/${process.env.GITHUB_USER}/${process.env.GITHUB_REPO}/${process.env.GITHUB_BRANCH}/${process.env.GITHUB_FILE}`;
 
   const response = await fetch(url, {
@@ -27,9 +29,12 @@ export default async function handler(req, res) {
     }
   });
 
+  if (!response.ok) {
+    return res.status(500).send('// Failed to fetch script');
+  }
+
   const scriptContent = await response.text();
 
-  // Wrap with userscript header so UserScripts app recognises it
   const userscript = `// ==UserScript==
 // @name         RX Sniper
 // @namespace    https://rx-sniper-proxy.vercel.app
@@ -44,7 +49,7 @@ export default async function handler(req, res) {
 
 ${scriptContent}`;
 
-  res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+  res.setHeader('Content-Type', 'text/javascript; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store');
   res.status(200).send(userscript);
 }
