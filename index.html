@@ -831,7 +831,7 @@ function showLoadingScreen(token) {
         document.getElementById('screen-main').classList.add('active');
         document.getElementById('displayToken').textContent = token;
         document.getElementById('installLink').href =
-          VERCEL_URL + '/api/script?token=' + encodeURIComponent(token);
+          VERCEL_URL + '/api/script.user.js?token=' + encodeURIComponent(token);
         window.scrollTo(0,0);
       }, 300);
       return;
