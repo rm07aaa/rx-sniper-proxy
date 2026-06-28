@@ -9,7 +9,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Barlow:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
 :root {
   --bg:    #04060d;
   --card:  #090e18;
@@ -18,7 +17,6 @@
   --line2: #1e2d42;
   --cyan:  #00d4ff;
   --cyan2: rgba(0,212,255,0.07);
-  --cyan3: rgba(0,212,255,0.15);
   --green: #00ff88;
   --red:   #ff3b5c;
   --amber: #ffb800;
@@ -29,219 +27,132 @@
   --body:  'Barlow', sans-serif;
   --disp:  'Bebas Neue', sans-serif;
 }
-
 html { background: var(--bg); }
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--body);
-  min-height: 100vh;
-  overflow-x: hidden;
+  background: var(--bg); color: var(--text);
+  font-family: var(--body); min-height: 100vh; overflow-x: hidden;
 }
-
-
 .screen { display: none; min-height: 100vh; }
 .screen.active { display: flex; }
 
-
-#screen-lock {
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 0 28px calc(40px + env(safe-area-inset-bottom,0px));
-  position: relative;
-  overflow: hidden;
-}
-
+/* ── SHARED BACKGROUNDS ── */
 .grid-bg {
-  position: absolute; inset: 0;
+  position: absolute; inset: 0; pointer-events: none;
   background-image:
     linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
   background-size: 44px 44px;
   animation: gridshift 20s linear infinite;
-  pointer-events: none;
 }
 @keyframes gridshift { from{background-position:0 0} to{background-position:44px 44px} }
-
 .glow-blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  pointer-events: none;
-  animation: blobmove 8s ease-in-out infinite;
+  position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none;
 }
 .blob1 { width:320px; height:320px; background:rgba(0,212,255,0.07); top:-80px; left:50%; transform:translateX(-50%); }
-.blob2 { width:200px; height:200px; background:rgba(0,100,255,0.05); bottom:80px; right:-60px; animation-delay:3s; }
-@keyframes blobmove { 0%,100%{transform:translateX(-50%) scale(1)} 50%{transform:translateX(-50%) scale(1.1)} }
+.blob2 { width:200px; height:200px; background:rgba(0,100,255,0.05); bottom:80px; right:-60px; }
 
+/* ══ LOCK SCREEN ══ */
+#screen-lock {
+  flex-direction: column; align-items: center; justify-content: center;
+  padding: 0 28px calc(40px + env(safe-area-inset-bottom,0px));
+  position: relative; overflow: hidden;
+}
 .lock-inner {
   position: relative; z-index: 2;
   width: 100%; max-width: 340px;
   display: flex; flex-direction: column; align-items: center;
 }
-
-.logo-wrap {
-  position: relative;
-  margin-bottom: 24px;
-}
+.logo-wrap { position: relative; margin-bottom: 24px; }
 .logo-ring {
-  position: absolute; top: 50%; left: 50%;
-  transform: translate(-50%,-50%);
-  border-radius: 50%;
-  border: 1px solid rgba(0,212,255,0.1);
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  border-radius: 50%; border: 1px solid rgba(0,212,255,0.1);
   animation: ringgrow 3s ease-in-out infinite;
 }
-.logo-ring:nth-child(1) { width:90px; height:90px; animation-delay:0s; }
-.logo-ring:nth-child(2) { width:120px; height:120px; animation-delay:.5s; border-color:rgba(0,212,255,0.06); }
-.logo-ring:nth-child(3) { width:150px; height:150px; animation-delay:1s; border-color:rgba(0,212,255,0.03); }
-@keyframes ringgrow { 0%,100%{opacity:.6;transform:translate(-50%,-50%) scale(1)} 50%{opacity:1;transform:translate(-50%,-50%) scale(1.05)} }
-
+.logo-ring:nth-child(1){width:90px;height:90px;animation-delay:0s}
+.logo-ring:nth-child(2){width:120px;height:120px;animation-delay:.5s;border-color:rgba(0,212,255,0.06)}
+.logo-ring:nth-child(3){width:150px;height:150px;animation-delay:1s;border-color:rgba(0,212,255,0.03)}
+@keyframes ringgrow{0%,100%{opacity:.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}}
 .logo-box {
-  position: relative; z-index: 2;
-  width: 64px; height: 64px;
-  background: linear-gradient(135deg, #0a1828 0%, #0d2240 100%);
-  border: 1px solid rgba(0,212,255,0.2);
-  border-radius: 18px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 28px;
+  position: relative; z-index: 2; width: 64px; height: 64px;
+  background: linear-gradient(135deg,#0a1828,#0d2240);
+  border: 1px solid rgba(0,212,255,0.2); border-radius: 18px;
+  display: flex; align-items: center; justify-content: center; font-size: 28px;
   box-shadow: 0 0 40px rgba(0,212,255,0.12), 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
 }
-
 .lock-title {
-  font-family: var(--disp);
-  font-size: 58px;
-  letter-spacing: 5px;
-  line-height: 1;
+  font-family: var(--disp); font-size: 58px; letter-spacing: 5px; line-height: 1;
   text-align: center;
-  background: linear-gradient(175deg, #ffffff 0%, #88ddff 50%, #00d4ff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  background: linear-gradient(175deg,#fff 0%,#88ddff 50%,#00d4ff 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   margin-bottom: 4px;
 }
 .lock-sub {
-  font-family: var(--mono);
-  font-size: 9px;
-  color: var(--text2);
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  margin-bottom: 44px;
+  font-family: var(--mono); font-size: 9px; color: var(--text2);
+  letter-spacing: 3px; text-transform: uppercase; margin-bottom: 44px;
 }
-
-
 .input-wrap {
-  width: 100%;
-  position: relative;
-  margin-bottom: 12px;
+  width: 100%; position: relative; margin-bottom: 12px;
 }
 .input-glow {
-  position: absolute; inset: -1px;
-  border-radius: 15px;
-  background: linear-gradient(135deg, rgba(0,212,255,0), rgba(0,212,255,0));
-  transition: background 0.3s;
-  pointer-events: none;
-  z-index: 0;
+  position: absolute; inset: -1px; border-radius: 15px;
+  background: linear-gradient(135deg,rgba(0,212,255,0),rgba(0,212,255,0));
+  transition: background 0.3s; pointer-events: none; z-index: 0;
 }
-.input-wrap.focused .input-glow {
-  background: linear-gradient(135deg, rgba(0,212,255,0.3), rgba(0,100,255,0.2));
-}
-.input-wrap.error .input-glow {
-  background: linear-gradient(135deg, rgba(255,59,92,0.4), rgba(255,0,80,0.2));
-  animation: shake 0.4s ease;
-}
-.input-wrap.success .input-glow {
-  background: linear-gradient(135deg, rgba(0,255,136,0.4), rgba(0,200,100,0.2));
-}
+.input-wrap.focused .input-glow { background: linear-gradient(135deg,rgba(0,212,255,0.3),rgba(0,100,255,0.2)); }
+.input-wrap.error   .input-glow { background: linear-gradient(135deg,rgba(255,59,92,0.4),rgba(255,0,80,0.2)); animation: shake 0.4s ease; }
+.input-wrap.success .input-glow { background: linear-gradient(135deg,rgba(0,255,136,0.4),rgba(0,200,100,0.2)); }
 @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
-
 .input-inner {
-  position: relative; z-index: 1;
-  background: var(--card);
-  border: 1px solid var(--line2);
-  border-radius: 14px;
-  padding: 16px 18px 14px;
+  position: relative; z-index: 1; background: var(--card);
+  border: 1px solid var(--line2); border-radius: 14px; padding: 16px 18px 14px;
   transition: border-color 0.2s;
 }
 .input-wrap.focused .input-inner { border-color: rgba(0,212,255,0.3); }
 .input-wrap.error   .input-inner { border-color: rgba(255,59,92,0.4); }
 .input-wrap.success .input-inner { border-color: rgba(0,255,136,0.3); }
-
 .input-label {
-  font-family: var(--mono);
-  font-size: 9px; font-weight: 500;
-  letter-spacing: 2px; text-transform: uppercase;
-  color: var(--text3); display: block; margin-bottom: 6px;
+  font-family: var(--mono); font-size: 9px; font-weight: 500;
+  letter-spacing: 2px; text-transform: uppercase; color: var(--text3);
+  display: block; margin-bottom: 6px;
 }
 .token-input {
   width: 100%; background: transparent; border: none; outline: none;
   font-family: var(--mono); font-size: 22px; font-weight: 500;
-  color: var(--text); letter-spacing: 4px;
-  -webkit-appearance: none; caret-color: var(--cyan);
+  color: var(--text); letter-spacing: 4px; -webkit-appearance: none; caret-color: var(--cyan);
 }
 .token-input::placeholder { color: var(--text3); letter-spacing: 2px; font-size: 16px; }
-
 .enter-btn {
-  width: 100%;
-  position: relative;
-  background: linear-gradient(135deg, #00c4ef 0%, #0077b8 100%);
-  color: #fff; border: none; border-radius: 14px;
-  padding: 18px; font-family: var(--disp); font-size: 24px;
-  letter-spacing: 4px; cursor: pointer; touch-action: manipulation;
-  overflow: hidden;
-  box-shadow: 0 4px 30px rgba(0,180,220,0.25), 0 1px 0 rgba(255,255,255,0.1) inset;
+  width: 100%; position: relative;
+  background: linear-gradient(135deg,#00c4ef 0%,#0077b8 100%);
+  color: #fff; border: none; border-radius: 14px; padding: 18px;
+  font-family: var(--disp); font-size: 24px; letter-spacing: 4px;
+  cursor: pointer; touch-action: manipulation; overflow: hidden;
+  box-shadow: 0 4px 30px rgba(0,180,220,0.25), inset 0 1px 0 rgba(255,255,255,0.1);
   transition: transform 0.1s, opacity 0.15s;
 }
 .enter-btn:active { transform: scale(0.98); }
 .enter-btn:disabled { opacity: 0.5; }
-.enter-btn-shine {
-  position: absolute; top: 0; left: -100%;
-  width: 60%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-  transform: skewX(-20deg);
-  animation: shine 3s ease infinite;
+.btn-shine {
+  position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
+  background: linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);
+  transform: skewX(-20deg); animation: shine 3s ease infinite;
 }
-@keyframes shine { 0%,100%{left:-100%} 40%,60%{left:150%} }
-
+@keyframes shine{0%,100%{left:-100%}40%,60%{left:150%}}
 .error-msg {
   display: none; margin-top: 10px; text-align: center;
-  font-family: var(--mono); font-size: 11px;
-  color: var(--red); letter-spacing: 0.5px;
+  font-family: var(--mono); font-size: 11px; color: var(--red); letter-spacing: 0.5px;
 }
 .error-msg.show { display: block; }
-
-.lock-footer {
-  margin-top: 32px;
-  display: flex; align-items: center; gap: 8px;
-}
+.lock-footer { margin-top: 32px; display: flex; align-items: center; gap: 8px; }
 .footer-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--text3); }
 .footer-txt { font-family: var(--mono); font-size: 9px; color: var(--text3); letter-spacing: 2px; text-transform: uppercase; }
+.spinner { display:inline-block; width:16px; height:16px; border:2px solid rgba(255,255,255,0.25); border-top-color:#fff; border-radius:50%; animation:spin 0.65s linear infinite; vertical-align:middle; margin-right:8px; }
+@keyframes spin{to{transform:rotate(360deg)}}
 
-.spinner {
-  display: inline-block; width: 16px; height: 16px;
-  border: 2px solid rgba(255,255,255,0.25); border-top-color: #fff;
-  border-radius: 50%; animation: spin 0.65s linear infinite;
-  vertical-align: middle; margin-right: 8px;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-
+/* ══ LOADING SCREEN ══ */
 #screen-loading {
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 28px;
-  position: relative;
-  overflow: hidden;
-}
-
-.loading-grid {
-  position: absolute; inset: 0;
-  background-image:
-    linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
-  background-size: 44px 44px;
-  pointer-events: none;
+  flex-direction: column; align-items: center; justify-content: center;
+  padding: 40px 28px; position: relative; overflow: hidden;
 }
 .loading-blob {
   position: absolute; border-radius: 50%; filter: blur(90px); pointer-events: none;
@@ -249,270 +160,210 @@ body {
   top: 50%; left: 50%; transform: translate(-50%,-50%);
   animation: loadblob 2s ease-in-out infinite;
 }
-@keyframes loadblob { 0%,100%{transform:translate(-50%,-50%) scale(1)} 50%{transform:translate(-50%,-50%) scale(1.15)} }
-
+@keyframes loadblob{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.15)}}
+.scan-lines {
+  position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,212,255,0.015) 3px,rgba(0,212,255,0.015) 4px);
+}
 .loading-inner {
-  position: relative; z-index: 2;
-  width: 100%; max-width: 300px;
+  position: relative; z-index: 2; width: 100%; max-width: 300px;
   display: flex; flex-direction: column; align-items: center;
 }
-
 .loading-logo {
-  width: 56px; height: 56px;
-  background: linear-gradient(135deg, #0a1828, #0d2240);
-  border: 1px solid rgba(0,212,255,0.2);
-  border-radius: 16px;
+  width: 56px; height: 56px; background: linear-gradient(135deg,#0a1828,#0d2240);
+  border: 1px solid rgba(0,212,255,0.2); border-radius: 16px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 24px; margin-bottom: 28px;
-  box-shadow: 0 0 30px rgba(0,212,255,0.15);
+  font-size: 24px; margin-bottom: 28px; box-shadow: 0 0 30px rgba(0,212,255,0.15);
 }
-
 .loading-title {
   font-family: var(--disp); font-size: 32px; letter-spacing: 5px;
   background: linear-gradient(135deg,#fff,#00d4ff);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   margin-bottom: 6px;
 }
-
 .loading-status {
   font-family: var(--mono); font-size: 10px; color: var(--text2);
   letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 36px;
   min-height: 16px; text-align: center;
-  transition: opacity 0.3s;
 }
-
-.progress-track {
-  width: 100%; height: 3px;
-  background: var(--line); border-radius: 2px; overflow: hidden;
-  margin-bottom: 12px;
-}
+.progress-track { width:100%; height:3px; background:var(--line); border-radius:2px; overflow:hidden; margin-bottom:12px; }
 .progress-fill {
   height: 100%; width: 0%;
-  background: linear-gradient(90deg, #0088cc, #00d4ff, #00ffcc);
-  background-size: 200% 100%;
-  border-radius: 2px;
-  transition: width 0.08s linear;
+  background: linear-gradient(90deg,#0088cc,#00d4ff,#00ffcc);
+  background-size: 200% 100%; border-radius: 2px;
+  transition: width 0.15s linear;
   animation: progressglow 1.5s ease infinite;
 }
-@keyframes progressglow { 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
+@keyframes progressglow{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+.progress-pct { font-family:var(--mono); font-size:11px; color:var(--cyan); letter-spacing:1px; align-self:flex-end; }
 
-.progress-pct {
-  font-family: var(--mono); font-size: 11px; color: var(--cyan);
-  letter-spacing: 1px; align-self: flex-end;
-}
-
-
-.scan-lines {
-  position: absolute; inset: 0; pointer-events: none;
-  background: repeating-linear-gradient(
-    0deg, transparent, transparent 3px,
-    rgba(0,212,255,0.015) 3px, rgba(0,212,255,0.015) 4px
-  );
-}
-
-
+/* ══ MAIN SCREEN ══ */
 #screen-main {
   flex-direction: column;
   padding-bottom: calc(60px + env(safe-area-inset-bottom,0px));
   animation: fadein 0.5s ease;
 }
-@keyframes fadein { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-
+@keyframes fadein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
 .main-hero {
   position: relative;
   padding: calc(env(safe-area-inset-top,0px) + 52px) 24px 36px;
-  overflow: hidden;
-  border-bottom: 1px solid var(--line);
-}
-.hero-bg-grid {
-  position: absolute; inset: 0;
-  background-image:
-    linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
+  overflow: hidden; border-bottom: 1px solid var(--line);
 }
 .hero-glow {
-  position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
-  width: 400px; height: 300px;
-  background: radial-gradient(ellipse, rgba(0,212,255,0.09) 0%, transparent 65%);
-  pointer-events: none;
+  position: absolute; top:-60px; left:50%; transform:translateX(-50%);
+  width:400px; height:300px;
+  background:radial-gradient(ellipse,rgba(0,212,255,0.09) 0%,transparent 65%);
+  pointer-events:none;
 }
 .hero-content { position: relative; z-index: 1; }
-
 .hero-eyebrow {
   display: inline-flex; align-items: center; gap: 7px;
-  background: rgba(0,255,136,0.08);
-  border: 1px solid rgba(0,255,136,0.15);
-  border-radius: 20px; padding: 4px 12px;
-  margin-bottom: 12px;
+  background: rgba(0,255,136,0.08); border: 1px solid rgba(0,255,136,0.15);
+  border-radius: 20px; padding: 4px 12px; margin-bottom: 12px;
 }
 .hero-eyebrow-dot {
   width: 5px; height: 5px; border-radius: 50%;
   background: var(--green); box-shadow: 0 0 6px var(--green);
   animation: pulse 2s ease infinite;
 }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-.hero-eyebrow-txt {
-  font-family: var(--mono); font-size: 9px; color: var(--green);
-  letter-spacing: 2px; text-transform: uppercase;
-}
-
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.hero-eyebrow-txt { font-family:var(--mono); font-size:9px; color:var(--green); letter-spacing:2px; text-transform:uppercase; }
 .hero-title {
-  font-family: var(--disp); font-size: 52px; letter-spacing: 3px;
-  line-height: 1; margin-bottom: 8px;
-  background: linear-gradient(165deg,#ffffff 0%,#88ddff 60%,#00d4ff 100%);
+  font-family: var(--disp); font-size: 52px; letter-spacing: 3px; line-height: 1; margin-bottom: 8px;
+  background: linear-gradient(165deg,#fff 0%,#88ddff 60%,#00d4ff 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
-.hero-desc {
-  font-size: 13px; color: var(--text2); line-height: 1.6;
-  max-width: 280px;
-}
-
+.hero-desc { font-size: 13px; color: var(--text2); line-height: 1.6; max-width: 280px; }
 .hero-token-chip {
   display: inline-flex; align-items: center; gap: 7px;
   background: var(--card2); border: 1px solid var(--line2);
   border-radius: 8px; padding: 6px 12px; margin-top: 16px;
 }
-.hero-token-chip-label { font-family: var(--mono); font-size: 9px; color: var(--text3); letter-spacing: 1.5px; text-transform: uppercase; }
-.hero-token-chip-value { font-family: var(--mono); font-size: 12px; color: var(--cyan); letter-spacing: 2px; }
-
+.hero-token-label { font-family:var(--mono); font-size:9px; color:var(--text3); letter-spacing:1.5px; text-transform:uppercase; }
+.hero-token-value { font-family:var(--mono); font-size:12px; color:var(--cyan); letter-spacing:2px; }
 
 .wrap { max-width: 480px; margin: 0 auto; padding: 0 18px; }
-
-
 .section { margin-top: 28px; }
 .sec-header { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
-.sec-num {
-  font-family: var(--mono); font-size: 9px; color: var(--cyan);
-  background: var(--cyan2); border: 1px solid rgba(0,212,255,0.15);
-  padding: 3px 9px; border-radius: 3px; letter-spacing: 1.5px;
-}
-.sec-title { font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--text); }
+.sec-num { font-family:var(--mono); font-size:9px; color:var(--cyan); background:var(--cyan2); border:1px solid rgba(0,212,255,0.15); padding:3px 9px; border-radius:3px; letter-spacing:1.5px; }
+.sec-title { font-size:11px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--text); }
 
-
-.install-card {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 16px; overflow: hidden;
+/* ── STEP CARDS ── */
+.step-card {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 16px; overflow: hidden; margin-bottom: 10px;
 }
-.install-top {
-  padding: 20px 20px 0;
+.step-card-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 18px; border-bottom: 1px solid var(--line);
+  background: linear-gradient(90deg,#0a1520,#0d1c2e);
 }
-.install-app-row {
-  display: flex; align-items: center; gap: 14px;
-  padding-bottom: 18px; border-bottom: 1px solid var(--line);
-  margin-bottom: 18px;
-}
-.app-icon {
-  width: 52px; height: 52px; border-radius: 12px;
-  background: linear-gradient(135deg, #1a1a2e, #16213e);
-  border: 1px solid var(--line2);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 24px; flex-shrink: 0;
-}
-.app-info { flex: 1; }
-.app-name { font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 2px; }
-.app-meta { font-family: var(--mono); font-size: 10px; color: var(--text2); letter-spacing: 0.5px; }
-.app-store-btn {
-  display: inline-flex; align-items: center; gap: 6px;
+.step-num-badge {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
   background: var(--cyan); color: #04060d;
-  font-family: var(--mono); font-size: 10px; font-weight: 700;
-  letter-spacing: 1px; padding: 8px 14px; border-radius: 8px;
-  text-decoration: none; flex-shrink: 0;
-  box-shadow: 0 4px 16px rgba(0,212,255,0.25);
-  touch-action: manipulation;
-}
-
-
-.install-steps { padding: 0 20px 20px; }
-.i-step {
-  display: flex; gap: 14px; margin-bottom: 14px;
-}
-.i-step:last-child { margin-bottom: 0; }
-.i-num {
-  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
-  background: var(--cyan2); border: 1px solid rgba(0,212,255,0.2);
+  font-family: var(--mono); font-size: 12px; font-weight: 700;
   display: flex; align-items: center; justify-content: center;
-  font-family: var(--mono); font-size: 10px; color: var(--cyan);
-  margin-top: 1px;
 }
-.i-body strong { display:block; font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 2px; }
-.i-body span { font-size: 12px; color: var(--text2); line-height: 1.6; }
-.i-body code {
+.step-card-title { font-size: 14px; font-weight: 700; color: #fff; }
+.step-card-body { padding: 16px 18px; }
+.step-desc { font-size: 13px; color: var(--text2); line-height: 1.7; margin-bottom: 14px; }
+.step-desc strong { color: var(--text); }
+.step-desc code {
   font-family: var(--mono); font-size: 11px; color: var(--cyan);
   background: var(--cyan2); border: 1px solid rgba(0,212,255,0.15);
-  padding: 1px 6px; border-radius: 4px;
+  padding: 2px 7px; border-radius: 4px;
 }
 
-
-.install-link-wrap {
-  padding: 0 20px 20px;
+/* ── BOOKMARKLET CODE BOX ── */
+.code-box {
+  background: #020509; border: 1px solid var(--line2);
+  border-radius: 10px; padding: 14px 16px;
+  font-family: var(--mono); font-size: 11px; color: #7dd3fc;
+  word-break: break-all; line-height: 1.6;
+  position: relative; margin-bottom: 12px;
+  max-height: 80px; overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+  user-select: none; -webkit-user-select: none;
 }
-.install-link-btn {
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  width: 100%;
-  background: linear-gradient(135deg, #00c4ef, #0077b8);
-  color: #fff; border: none; border-radius: 12px;
-  padding: 17px; font-family: var(--disp); font-size: 22px;
-  letter-spacing: 3px; text-decoration: none;
-  box-shadow: 0 6px 28px rgba(0,180,220,0.25);
-  touch-action: manipulation; cursor: pointer;
-  position: relative; overflow: hidden;
-  transition: transform 0.1s;
-}
-.install-link-btn:active { transform: scale(0.98); }
-.install-link-btn::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(180deg,rgba(255,255,255,0.08) 0%,transparent 50%);
-  pointer-events: none;
+.code-box.revealed {
+  max-height: none;
+  -webkit-mask-image: none; mask-image: none;
 }
 
-
-hr { border: none; border-top: 1px solid var(--line); margin: 28px 0 0; }
-
-
-.use-card {
-  background: var(--card); border: 1px solid var(--line);
-  border-radius: 16px; overflow: hidden;
+/* ── ACTION BUTTONS ── */
+.action-btn {
+  width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
+  background: linear-gradient(135deg,#00c4ef,#0077b8);
+  color: #fff; border: none; border-radius: 12px; padding: 16px;
+  font-family: var(--disp); font-size: 20px; letter-spacing: 2px;
+  cursor: pointer; touch-action: manipulation; position: relative; overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,180,220,0.25);
+  transition: transform 0.1s; text-decoration: none;
+  margin-bottom: 8px;
 }
-.use-row {
-  display: flex; align-items: flex-start; gap: 14px;
-  padding: 15px 18px; border-bottom: 1px solid rgba(255,255,255,0.03);
+.action-btn:active { transform: scale(0.98); }
+.action-btn::after { content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(255,255,255,0.08) 0%,transparent 50%); pointer-events:none; }
+.action-btn.green { background: linear-gradient(135deg,#00cc66,#007a3d); box-shadow: 0 4px 24px rgba(0,200,100,0.2); }
+.action-btn.outline {
+  background: transparent; border: 1.5px solid rgba(0,212,255,0.25);
+  color: var(--cyan); font-size: 16px; letter-spacing: 1px; box-shadow: none;
+  font-family: var(--mono); font-weight: 500;
 }
-.use-row:last-child { border-bottom: none; }
-.use-icon {
-  width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+
+/* ── COPY FEEDBACK ── */
+.copy-feedback {
+  display: none; text-align: center; margin-top: 8px;
+  font-family: var(--mono); font-size: 11px; color: var(--green); letter-spacing: 1px;
+}
+.copy-feedback.show { display: block; }
+
+/* ── CALLOUT ── */
+.callout {
+  border-radius: 10px; padding: 12px 14px; font-size: 12px; line-height: 1.7;
+  display: flex; gap: 10px; margin-top: 10px;
+}
+.callout-icon { flex-shrink:0; font-size:15px; margin-top:1px; }
+.callout-text { flex:1; }
+.callout-text strong { color:#fff; }
+.callout.cyan  { background:var(--cyan2); border:1px solid rgba(0,212,255,0.15); color:#7ecfea; }
+.callout.green { background:rgba(0,255,136,0.06); border:1px solid rgba(0,255,136,0.15); color:#6effa8; }
+.callout.amber { background:rgba(255,184,0,0.06); border:1px solid rgba(255,184,0,0.15); color:#ffd166; }
+
+/* ── VISUAL GUIDE STEPS ── */
+.guide-steps { display: flex; flex-direction: column; gap: 10px; }
+.guide-step {
+  display: flex; gap: 12px; align-items: flex-start;
   background: var(--card2); border: 1px solid var(--line);
-  display: flex; align-items: center; justify-content: center; font-size: 15px;
+  border-radius: 10px; padding: 12px 14px;
 }
-.use-body strong { display:block; font-size:14px; font-weight:700; color:#fff; margin-bottom:2px; }
-.use-body span { font-size:12px; color:var(--text2); line-height:1.6; }
+.guide-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+.guide-text strong { display:block; font-size:13px; font-weight:700; color:#fff; margin-bottom:2px; }
+.guide-text span { font-size:12px; color:var(--text2); line-height:1.6; }
+.guide-text code { font-family:var(--mono); font-size:11px; color:var(--cyan); background:var(--cyan2); border:1px solid rgba(0,212,255,0.15); padding:1px 6px; border-radius:4px; }
 
-
-.info-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-.info-pill {
-  display: flex; align-items: center; gap: 7px;
-  background: var(--card); border: 1px solid var(--line);
-  border-radius: 10px; padding: 10px 14px; flex: 1; min-width: 120px;
+/* ── SUCCESS BANNER ── */
+.success-banner {
+  display: none; background: rgba(0,255,136,0.08); border: 1px solid rgba(0,255,136,0.2);
+  border-radius: 12px; padding: 16px; text-align: center; margin-top: 12px;
 }
-.pill-icon { font-size: 16px; }
-.pill-body {}
-.pill-label { font-family: var(--mono); font-size: 9px; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; }
-.pill-val { font-size: 12px; font-weight: 700; color: var(--text); margin-top: 1px; }
+.success-banner.show { display: block; }
+.success-banner .s-icon { font-size: 28px; display: block; margin-bottom: 6px; }
+.success-banner .s-title { font-family: var(--disp); font-size: 22px; letter-spacing: 2px; color: var(--green); margin-bottom: 4px; }
+.success-banner .s-sub { font-family: var(--mono); font-size: 11px; color: #6effa8; letter-spacing: 1px; }
 
-.bottom { height: calc(40px + env(safe-area-inset-bottom,0px)); }
+hr { border:none; border-top:1px solid var(--line); margin:28px 0 0; }
+.bottom { height:calc(40px + env(safe-area-inset-bottom,0px)); }
 </style>
 </head>
 <body>
 
-
+<!-- ══ SCREEN 1: LOCK ══ -->
 <div id="screen-lock" class="screen active">
   <div class="grid-bg"></div>
   <div class="glow-blob blob1"></div>
   <div class="glow-blob blob2"></div>
-
   <div class="lock-inner">
     <div class="logo-wrap">
       <div class="logo-ring"></div>
@@ -520,29 +371,22 @@ hr { border: none; border-top: 1px solid var(--line); margin: 28px 0 0; }
       <div class="logo-ring"></div>
       <div class="logo-box">⚡</div>
     </div>
-
     <div class="lock-title">RX SNIPER</div>
     <div class="lock-sub">Secure Access Portal</div>
-
     <div class="input-wrap" id="inputWrap">
       <div class="input-glow"></div>
       <div class="input-inner">
         <span class="input-label">Access Token</span>
         <input class="token-input" id="tokenInput" type="text"
           placeholder="••••••••"
-          autocorrect="off" autocapitalize="none" spellcheck="false"
-          maxlength="64"
+          autocorrect="off" autocapitalize="none" spellcheck="false" maxlength="64"
           onkeydown="if(event.key==='Enter')verify()">
       </div>
     </div>
-
     <button class="enter-btn" id="enterBtn" onclick="verify()">
-      <span class="enter-btn-shine"></span>
-      ENTER
+      <span class="btn-shine"></span>ENTER
     </button>
-
-    <div class="error-msg" id="errMsg">Invalid token — access denied. Get a code at @remx.seller Discord</div>
-
+    <div class="error-msg" id="errMsg">Invalid token — access denied</div>
     <div class="lock-footer">
       <div class="footer-dot"></div>
       <div class="footer-txt">RX · End-to-End Encrypted</div>
@@ -551,16 +395,15 @@ hr { border: none; border-top: 1px solid var(--line); margin: 28px 0 0; }
   </div>
 </div>
 
+<!-- ══ SCREEN 2: LOADING ══ -->
 <div id="screen-loading" class="screen">
-  <div class="loading-grid"></div>
+  <div class="grid-bg"></div>
   <div class="scan-lines"></div>
   <div class="loading-blob"></div>
-
   <div class="loading-inner">
     <div class="loading-logo">⚡</div>
     <div class="loading-title">RX SNIPER</div>
     <div class="loading-status" id="loadStatus">Verifying credentials</div>
-
     <div class="progress-track">
       <div class="progress-fill" id="progressFill"></div>
     </div>
@@ -568,170 +411,171 @@ hr { border: none; border-top: 1px solid var(--line); margin: 28px 0 0; }
   </div>
 </div>
 
-
+<!-- ══ SCREEN 3: MAIN ══ -->
 <div id="screen-main" class="screen">
   <div class="main-hero">
-    <div class="hero-bg-grid"></div>
+    <div class="grid-bg"></div>
     <div class="hero-glow"></div>
     <div class="hero-content">
       <div class="hero-eyebrow">
         <div class="hero-eyebrow-dot"></div>
         <span class="hero-eyebrow-txt">Access Granted</span>
       </div>
-      <div class="hero-title">RX SNIPER Mobile</div>
-      <div class="hero-desc">Your secure IOS Autobuyer for <br>EA FC Ultimate Team.</div>
+      <div class="hero-title">RX SNIPER</div>
+      <div class="hero-desc">Your personal secure script injector for EA FC Ultimate Team.</div>
       <div class="hero-token-chip">
-        <span class="hero-token-chip-label">Token</span>
-        <span class="hero-token-chip-value" id="displayToken">—</span>
+        <span class="hero-token-label">TOKEN</span>
+        <span class="hero-token-value" id="displayToken">—</span>
       </div>
     </div>
   </div>
 
   <div class="wrap">
 
+    <!-- ACTIVATE BUTTON -->
     <div class="section">
       <div class="sec-header">
         <span class="sec-num">01</span>
-        <span class="sec-title">Install UserScripts App</span>
+        <span class="sec-title">Activate Your Bookmark</span>
       </div>
-      <div class="install-card">
-        <div class="install-top">
-          <div class="install-app-row">
-            <div class="app-icon">📜</div>
-            <div class="app-info">
-              <div class="app-name">UserScripts</div>
-              <div class="app-meta">Free · Safari Extension · App Store</div>
+
+      <!-- STEP 1 -->
+      <div class="step-card">
+        <div class="step-card-header">
+          <div class="step-num-badge">1</div>
+          <div class="step-card-title">Bookmark this page first</div>
+        </div>
+        <div class="step-card-body">
+          <p class="step-desc">
+            Tap the <strong>Share icon</strong> at the bottom of Safari
+            then tap <strong>"Add to Bookmarks"</strong> — name it <strong>RX Sniper</strong> and save it.
+            <br><br>This creates a placeholder bookmark we'll replace in the next step.
+          </p>
+          <div class="guide-steps">
+            <div class="guide-step">
+              <div class="guide-icon">⬆️</div>
+              <div class="guide-text">
+                <strong>Tap Share (box with arrow)</strong>
+                <span>At the bottom centre of Safari</span>
+              </div>
             </div>
-            <a class="app-store-btn" href="https://apps.apple.com/us/app/userscripts/id1463298887" target="_blank">
-              GET
-            </a>
+            <div class="guide-step">
+              <div class="guide-icon">🔖</div>
+              <div class="guide-text">
+                <strong>Tap "Add to Bookmarks"</strong>
+                <span>Name it <code>RX Sniper</code> → tap Save</span>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="install-steps">
-          <div class="i-step">
-            <div class="i-num">1</div>
-            <div class="i-body">
-              <strong>Download UserScripts from App Store</strong>
-              <span>Tap GET above. It's free.</span>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step-card">
+        <div class="step-card-header">
+          <div class="step-num-badge">2</div>
+          <div class="step-card-title">Copy the activation code</div>
+        </div>
+        <div class="step-card-body">
+          <p class="step-desc">This is your personal bookmarklet code. Tap copy — the source code of the bot is <strong>never inside this</strong>, it only contains your secure token.</p>
+          <div class="code-box" id="codeBox">Loading your code...</div>
+          <button class="action-btn" id="copyBtn" onclick="copyCode()">
+            📋 COPY CODE
+          </button>
+          <div class="copy-feedback" id="copyFeedback">✓ Copied to clipboard</div>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step-card">
+        <div class="step-card-header">
+          <div class="step-num-badge">3</div>
+          <div class="step-card-title">Replace the bookmark URL</div>
+        </div>
+        <div class="step-card-body">
+          <p class="step-desc">Now edit the bookmark you just saved and replace its URL with the code you copied.</p>
+          <div class="guide-steps">
+            <div class="guide-step">
+              <div class="guide-icon">🔖</div>
+              <div class="guide-text">
+                <strong>Tap the bookmarks icon in Safari</strong>
+                <span>The open book icon at the bottom of Safari</span>
+              </div>
+            </div>
+            <div class="guide-step">
+              <div class="guide-icon">✏️</div>
+              <div class="guide-text">
+                <strong>Tap Edit → find RX Sniper → tap it</strong>
+                <span>Tap the <code>›</code> arrow next to RX Sniper to open it</span>
+              </div>
+            </div>
+            <div class="guide-step">
+              <div class="guide-icon">🗑️</div>
+              <div class="guide-text">
+                <strong>Clear the URL field completely</strong>
+                <span>Tap the URL field, select all, delete everything</span>
+              </div>
+            </div>
+            <div class="guide-step">
+              <div class="guide-icon">📋</div>
+              <div class="guide-text">
+                <strong>Paste and save</strong>
+                <span>Long-press → Paste → tap Done</span>
+              </div>
             </div>
           </div>
-          <div class="i-step">
-            <div class="i-num">2</div>
-            <div class="i-body">
-              <strong>Enable it in Safari Settings</strong>
-              <span>Go to <code>Settings → Safari → Extensions → UserScripts</code> → turn On → set to <code>Allow on all websites</code></span>
-            </div>
+          <div class="success-banner" id="successBanner">
+            <span class="s-icon">⚡</span>
+            <div class="s-title">BOOKMARK READY</div>
+            <div class="s-sub">Go to EA FC Web App and tap your bookmark</div>
           </div>
-          <div class="i-step">
-            <div class="i-num">3</div>
-            <div class="i-body">
-              <strong>Close and reopen Safari</strong>
-              <span>Required for the extension to activate properly.</span>
-            </div>
-          </div>
+          <button class="action-btn green" style="margin-top:14px;" onclick="markDone()">
+            ✓ I'VE DONE IT — ACTIVATE
+          </button>
         </div>
       </div>
     </div>
 
-
-    <div class="section">
-      <div class="sec-header">
-        <span class="sec-num">02</span>
-        <span class="sec-title">Install RX Sniper Script</span>
-      </div>
-      <div class="install-card">
-        <div class="install-steps" style="padding-top:20px;">
-          <div class="i-step">
-            <div class="i-num">1</div>
-            <div class="i-body">
-              <strong>Tap the Install Script button below</strong>
-              <span>It opens a UserScripts install prompt — tap <code>Tap to install</code>.</span>
-            </div>
-          </div>
-          <div class="i-step">
-            <div class="i-num">2</div>
-            <div class="i-body">
-              <strong>Open the EA FC Web App in Safari</strong>
-              <span>Navigate to the Transfer Market and wait for it to load.</span>
-            </div>
-          </div>
-          <div class="i-step">
-            <div class="i-num">3</div>
-            <div class="i-body">
-              <strong>Give UserScripts permission</strong>
-              <span>Tap the puzzle piece icon in Safari toolbar → UserScripts → <code>Always Allow on this website</code>.</span>
-            </div>
-          </div>
-          <div class="i-step">
-            <div class="i-num">4</div>
-            <div class="i-body">
-              <strong>Refresh the page</strong>
-              <span>RX Sniper panel slides up automatically. Done.</span>
-            </div>
-          </div>
-        </div>
-        <div class="install-link-wrap">
-          <a id="installLink" class="install-link-btn" href="#">
-            ⚡ INSTALL SCRIPT
-          </a>
-        </div>
-      </div>
-    </div>
-
-
+    <!-- HOW TO USE -->
     <hr>
     <div class="section">
       <div class="sec-header">
-        <span class="sec-num">03</span>
-        <span class="sec-title">How It Works</span>
+        <span class="sec-num">02</span>
+        <span class="sec-title">How to Use</span>
       </div>
-      <div class="use-card">
-        <div class="use-row">
-          <div class="use-icon">🔄</div>
-          <div class="use-body">
-            <strong>Runs automatically</strong>
-            <span>Script activates every time you open the EA FC Web App — no tapping anything.</span>
+      <div class="guide-steps">
+        <div class="guide-step">
+          <div class="guide-icon">⚽</div>
+          <div class="guide-text">
+            <strong>Open EA FC Web App in Safari</strong>
+            <span>Go to the Transfer Market and wait for it to fully load</span>
           </div>
         </div>
-        <div class="use-row">
-          <div class="use-icon">🔄</div>
-          <div class="use-body">
-            <strong>Updates are instant</strong>
-            <span>New script versions are live the next time you open the web app. No reinstall ever needed.</span>
+        <div class="guide-step">
+          <div class="guide-icon">🔖</div>
+          <div class="guide-text">
+            <strong>Tap your RX Sniper bookmark</strong>
+            <span>Bookmarks icon → RX Sniper → tap. Cyan loading bar flashes at the top then the panel appears.</span>
           </div>
         </div>
-        <div class="use-row">
-          <div class="use-icon">⚡</div>
-          <div class="use-body">
-            <strong>Toggle the panel</strong>
-            <span>Use the floating ⚡ button to collapse and expand the sniper panel while browsing.</span>
+        <div class="guide-step">
+          <div class="guide-icon">⚡</div>
+          <div class="guide-text">
+            <strong>Toggle the panel with the ⚡ button</strong>
+            <span>Floating button bottom-right collapses and expands the panel</span>
+          </div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-icon">🔒</div>
+          <div class="guide-text">
+            <strong>Source code is always secure</strong>
+            <span>The bookmark only contains your token — the actual bot code is fetched live from your private server each time</span>
           </div>
         </div>
       </div>
-    </div>
-
-   
-    <div class="info-row" style="margin-top:20px;">
-      <div class="info-pill">
-        <div class="pill-icon">📱</div>
-        <div class="pill-body">
-          <div class="pill-label">Platform</div>
-          <div class="pill-val">iPhone Safari</div>
-        </div>
-      </div>
-      <div class="info-pill">
-        <div class="pill-icon">🔐</div>
-        <div class="pill-body">
-          <div class="pill-label">Security</div>
-          <div class="pill-val">Token Locked</div>
-        </div>
-      </div>
-      <div class="info-pill">
-        <div class="pill-icon">🚀</div>
-        <div class="pill-body">
-          <div class="pill-label">Make Millions from Today</div>
-          <div class="pill-val">Get the Desktop Version on Discord too.</div>
-        </div>
+      <div class="callout cyan" style="margin-top:14px;">
+        <div class="callout-icon">🔄</div>
+        <div class="callout-text"><strong>Updates are automatic.</strong> When you push a new script version, all users get it instantly next time they tap their bookmark. Nobody needs a new bookmark.</div>
       </div>
     </div>
 
@@ -740,10 +584,12 @@ hr { border: none; border-top: 1px solid var(--line); margin: 28px 0 0; }
 </div>
 
 <script>
-
+// ── YOUR VERCEL URL ───────────────────────────────────────
 const VERCEL_URL = 'https://rx-sniper-proxy.vercel.app/';
+// ─────────────────────────────────────────────────────────
 
 let verifiedToken = '';
+let bookmarkletCode = '';
 
 const tokenInput = document.getElementById('tokenInput');
 const inputWrap  = document.getElementById('inputWrap');
@@ -769,50 +615,41 @@ async function verify() {
     });
 
     if (res.ok) {
-  
       inputWrap.classList.add('success');
       verifiedToken = token;
       enterBtn.innerHTML = '✓ VERIFIED';
-
-      setTimeout(() => {
-        showLoadingScreen(token);
-      }, 400);
-
+      setTimeout(() => showLoading(token), 400);
     } else {
       inputWrap.classList.add('error');
       errMsg.textContent = 'Invalid token — access denied';
       errMsg.classList.add('show');
       enterBtn.disabled = false;
-      enterBtn.innerHTML = '<span class="enter-btn-shine"></span>ENTER';
+      enterBtn.innerHTML = '<span class="btn-shine"></span>ENTER';
       tokenInput.value = '';
-      setTimeout(() => {
-        inputWrap.classList.remove('error');
-        tokenInput.focus();
-      }, 600);
+      setTimeout(() => { inputWrap.classList.remove('error'); tokenInput.focus(); }, 600);
     }
-
-  } catch (e) {
+  } catch(e) {
     inputWrap.classList.add('error');
     errMsg.textContent = 'Connection error — check your internet';
     errMsg.classList.add('show');
     enterBtn.disabled = false;
-    enterBtn.innerHTML = '<span class="enter-btn-shine"></span>ENTER';
+    enterBtn.innerHTML = '<span class="btn-shine"></span>ENTER';
     setTimeout(() => inputWrap.classList.remove('error'), 600);
   }
 }
 
-
+// ── LOADING ───────────────────────────────────────────────
 const loadSteps = [
-  { pct: 12,  msg: 'Verifying credentials' },
-  { pct: 28,  msg: 'Token authenticated' },
-  { pct: 45,  msg: 'Connecting to server' },
-  { pct: 62,  msg: 'Fetching configuration' },
-  { pct: 78,  msg: 'Preparing environment' },
-  { pct: 90,  msg: 'Initializing RX Sniper' },
-  { pct: 100, msg: 'Ready' },
+  { pct:12,  msg:'Verifying credentials'    },
+  { pct:28,  msg:'Token authenticated'      },
+  { pct:45,  msg:'Connecting to server'     },
+  { pct:62,  msg:'Fetching configuration'   },
+  { pct:78,  msg:'Preparing environment'    },
+  { pct:90,  msg:'Initializing RX Sniper'   },
+  { pct:100, msg:'Ready'                    },
 ];
 
-function showLoadingScreen(token) {
+function showLoading(token) {
   document.getElementById('screen-lock').classList.remove('active');
   document.getElementById('screen-loading').classList.add('active');
   window.scrollTo(0,0);
@@ -820,36 +657,99 @@ function showLoadingScreen(token) {
   const fill   = document.getElementById('progressFill');
   const pct    = document.getElementById('progressPct');
   const status = document.getElementById('loadStatus');
+  let i = 0;
 
-  let stepIndex = 0;
-
-  function runStep() {
-    if (stepIndex >= loadSteps.length) {
-      
-      setTimeout(() => {
-        document.getElementById('screen-loading').classList.remove('active');
-        document.getElementById('screen-main').classList.add('active');
-        document.getElementById('displayToken').textContent = token;
-        document.getElementById('installLink').href =
-          VERCEL_URL + '/api/rx-sniper.user.js?token=' + encodeURIComponent(token);
-        window.scrollTo(0,0);
-      }, 300);
+  function next() {
+    if (i >= loadSteps.length) {
+      setTimeout(() => showMain(token), 300);
       return;
     }
-
-    const step = loadSteps[stepIndex];
-    fill.style.width   = step.pct + '%';
-    pct.textContent    = step.pct + '%';
-    status.textContent = step.msg;
-
-    stepIndex++;
-
-  
-    const delay = stepIndex === loadSteps.length ? 400 : 180 + Math.random() * 200;
-    setTimeout(runStep, delay);
+    const s = loadSteps[i];
+    fill.style.width   = s.pct + '%';
+    pct.textContent    = s.pct + '%';
+    status.textContent = s.msg;
+    i++;
+    setTimeout(next, i === loadSteps.length ? 400 : 180 + Math.random() * 180);
   }
+  next();
+}
 
-  runStep();
+// ── MAIN ──────────────────────────────────────────────────
+function showMain(token) {
+  document.getElementById('screen-loading').classList.remove('active');
+  document.getElementById('screen-main').classList.add('active');
+  document.getElementById('displayToken').textContent = token;
+  window.scrollTo(0,0);
+
+  // Build the bookmarklet — tiny loader, source code never exposed
+  const endpoint  = VERCEL_URL + '/api/serve';
+  const safeToken = token.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+
+  bookmarkletCode =
+    `javascript:(function(){` +
+    `var d=document,` +
+    `b=d.createElement('div');` +
+    `b.style.cssText='position:fixed;top:0;left:0;right:0;height:3px;` +
+    `background:linear-gradient(90deg,#00d4ff,#0088cc);` +
+    `z-index:2147483647;animation:rxp 1.2s ease infinite;';` +
+    `var st=d.createElement('style');` +
+    `st.textContent='@keyframes rxp{0%{transform:scaleX(0);transform-origin:left}` +
+    `50%{transform:scaleX(1);transform-origin:left}` +
+    `51%{transform:scaleX(1);transform-origin:right}` +
+    `100%{transform:scaleX(0);transform-origin:right}}';` +
+    `d.head.appendChild(st);d.body.appendChild(b);` +
+    `fetch('${endpoint}',{headers:{'x-rx-token':'${safeToken}'}})` +
+    `.then(function(r){if(!r.ok)throw new Error(r.status);return r.text();})` +
+    `.then(function(c){var s=d.createElement('script');s.textContent=c;d.head.appendChild(s);` +
+    `b.style.background='#00ff88';b.style.animation='none';` +
+    `setTimeout(function(){b.remove();st.remove();},1000);})` +
+    `.catch(function(e){b.style.background='#ff3b5c';b.style.animation='none';` +
+    `setTimeout(function(){b.remove();st.remove();},3000);});` +
+    `})();`;
+
+  document.getElementById('codeBox').textContent = bookmarkletCode;
+}
+
+// ── COPY ──────────────────────────────────────────────────
+function copyCode() {
+  if (!bookmarkletCode) return;
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(bookmarkletCode).then(showCopied).catch(fallbackCopy);
+  } else {
+    fallbackCopy();
+  }
+}
+
+function fallbackCopy() {
+  const ta = document.createElement('textarea');
+  ta.value = bookmarkletCode;
+  ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;font-size:16px;';
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try { document.execCommand('copy'); showCopied(); } catch(e) {}
+  document.body.removeChild(ta);
+}
+
+function showCopied() {
+  const fb = document.getElementById('copyFeedback');
+  const btn = document.getElementById('copyBtn');
+  fb.classList.add('show');
+  btn.innerHTML = '✓ COPIED';
+  btn.style.background = 'linear-gradient(135deg,#00cc66,#007a3d)';
+  setTimeout(() => {
+    fb.classList.remove('show');
+    btn.innerHTML = '📋 COPY CODE';
+    btn.style.background = '';
+  }, 2500);
+}
+
+function markDone() {
+  document.getElementById('successBanner').classList.add('show');
+  document.querySelector('.action-btn.green').innerHTML = '⚡ BOOKMARK IS ACTIVE';
+  document.querySelector('.action-btn.green').style.opacity = '0.6';
+  document.querySelector('.action-btn.green').onclick = null;
+  document.getElementById('successBanner').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 </script>
 </body>
